@@ -23,7 +23,7 @@ func ListGcpCredentials(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Println("Locally Available aws credentials:")
+	fmt.Println("Locally Available gcp credentials:")
 	for _, version := range versions {
 		if version == "credentials"{
 			continue
@@ -50,6 +50,9 @@ func SwitchGcpCredentials(c *cli.Context) error {
 	}
 
 	symlinkSource := fmt.Sprintf("%s/.gcp/%s", home, credentialsName)
+	if !fileExists(symlinkSource) {
+		return fmt.Errorf("%s does not exist", symlinkSource)
+	}
 	symlinkTarget := fmt.Sprintf("%s/.gcp/credentials", home)
 
 	if _, err := os.Lstat(symlinkTarget); err == nil {

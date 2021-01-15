@@ -39,7 +39,7 @@ func SwitchTerraformVersion(c *cli.Context) error {
 		return fmt.Errorf("version number not supplied")
 	}
 	version := c.Args().First()
-	fmt.Printf("switching to version: %s\n", version)
+	fmt.Printf("Switching to version: %s\n", version)
 
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -47,6 +47,9 @@ func SwitchTerraformVersion(c *cli.Context) error {
 	}
 
 	symlinkSource := fmt.Sprintf("%s/bin/terraform-%s", home, version)
+	if !fileExists(symlinkSource) {
+		return fmt.Errorf("version '%s' does not exist", version)
+	}
 	symlinkTarget := fmt.Sprintf("%s/bin/terraform", home)
 
 	if _, err := os.Lstat(symlinkTarget); err == nil {
@@ -102,5 +105,3 @@ func InstallTerraformVersions(c *cli.Context) error {
 	fmt.Printf("Terraform %s has been downloaded and extracted (it is not set as active)", version)
 	return nil
 }
-
-

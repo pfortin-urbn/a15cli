@@ -47,6 +47,9 @@ func SwitchAwsCredentials(c *cli.Context) error {
 	}
 
 	symlinkSource := fmt.Sprintf("%s/.aws/credentials.%s", home, credentialsName)
+	if !fileExists(symlinkSource) {
+		return fmt.Errorf("%s does not exist", symlinkSource)
+	}
 	symlinkTarget := fmt.Sprintf("%s/.aws/credentials", home)
 
 	if _, err := os.Lstat(symlinkTarget); err == nil {

@@ -4,12 +4,16 @@ import (
 	"archive/zip"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+)
+
+const(
+	ANSI_RESET = "\u001B[0m"
+	ANSI_RED = "\u001B[31m"
 )
 
 var validateVersion = regexp.MustCompile(`^\d[0-9.]*$`)
@@ -63,7 +67,6 @@ func unzip(src, destDir string) error {
 
 			err = os.MkdirAll(fdir, f.Mode())
 			if err != nil {
-				log.Fatal(err)
 				return err
 			}
 			f, err := os.OpenFile(
@@ -130,4 +133,12 @@ func getCurrentVersion(linkName, separator, binDir string) (string, error){
 		return after(filename, fmt.Sprintf("%s%s", linkName, separator)), nil
 	}
 	return filepath.Base(filename), nil
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }

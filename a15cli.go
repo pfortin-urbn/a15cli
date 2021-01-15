@@ -2,8 +2,8 @@ package main
 
 import (
 	"a15cli/clients"
+	"fmt"
 	"github.com/urfave/cli/v2"
-	"log"
 	"os"
 )
 
@@ -19,52 +19,92 @@ func main() {
 				Action:  clients.BaseInstall,
 			},
 			{
-				Name:    "terra-install",
-				Aliases: []string{"ti"},
-				Usage:   "install/overwrite a new terraform versions",
-				Action:  clients.InstallTerraformVersions,
+				Name:        "terraform",
+				Aliases:     []string{"t"},
+				Usage:       "terraform commands",
+				Subcommands: []*cli.Command{
+					{
+						Name:  "install",
+						Aliases:     []string{"i"},
+						Usage: "install a new terraform version",
+						Action: clients.InstallTerraformVersions,
+					},
+					{
+						Name:  "list",
+						Aliases:     []string{"l"},
+						Usage: "list available terraform versions",
+						Action: clients.ListTerraformVersions,
+					},
+					{
+						Name:  "switch",
+						Aliases:     []string{"s"},
+						Usage: "switch terraform versions",
+						Action: clients.SwitchTerraformVersion,
+					},
+				},
 			},
 			{
-				Name:    "terra-list",
-				Aliases: []string{"tl"},
-				Usage:   "list all available terraform versions",
-				Action:  clients.ListTerraformVersions,
+				Name:        "aws",
+				Aliases:     []string{"a"},
+				Usage:       "aws commands",
+				Subcommands: []*cli.Command{
+					{
+						Name:  "list",
+						Aliases:     []string{"l"},
+						Usage: "list available aws credentials",
+						Action: clients.ListAwsCredentials,
+					},
+					{
+						Name:  "switch",
+						Aliases:     []string{"s"},
+						Usage: "switch aws credentials",
+						Action: clients.SwitchAwsCredentials,
+					},
+				},
 			},
 			{
-				Name:    "terra-switch",
-				Aliases: []string{"tw"},
-				Usage:   "switch active terraform versions",
-				Action:  clients.SwitchTerraformVersion,
+				Name:        "gcp",
+				Aliases:     []string{"g"},
+				Usage:       "gcp commands",
+				Subcommands: []*cli.Command{
+					{
+						Name:  "list",
+						Aliases:     []string{"l"},
+						Usage: "list available gcp credentials",
+						Action: clients.ListGcpCredentials,
+					},
+					{
+						Name:  "switch",
+						Aliases:     []string{"s"},
+						Usage: "switch gcp credentials",
+						Action: clients.SwitchGcpCredentials,
+					},
+				},
 			},
 			{
-				Name:    "aws-list",
-				Aliases: []string{"al"},
-				Usage:   "list available AWS credentials",
-				Action:  clients.ListAwsCredentials,
-			},
-			{
-				Name:    "aws-switch",
-				Aliases: []string{"aw"},
-				Usage:   "switch the active AWS credentials",
-				Action:  clients.SwitchAwsCredentials,
-			},
-			{
-				Name:    "gcp-list",
-				Aliases: []string{"gl"},
-				Usage:   "list available AWS credentials",
-				Action:  clients.ListGcpCredentials,
-			},
-			{
-				Name:    "gcp-switch",
-				Aliases: []string{"gw"},
-				Usage:   "switch the active AWS credentials",
-				Action:  clients.SwitchGcpCredentials,
+				Name:        "ssh",
+				Aliases:     []string{"s"},
+				Usage:       "ssh commands",
+				Subcommands: []*cli.Command{
+					{
+						Name:  "list",
+						Aliases:     []string{"l"},
+						Usage: "list available ssh identities",
+						Action: clients.ListSshCredentials,
+					},
+					{
+						Name:  "switch",
+						Aliases:     []string{"s"},
+						Usage: "switch ssh identity",
+						Action: clients.SwitchSshCredentials,
+					},
+				},
 			},
 		},
 	}
 
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("%sERROR: %s\n%s", clients.ANSI_RED, err.Error(), clients.ANSI_RESET)
 	}
 }
