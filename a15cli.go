@@ -19,6 +19,18 @@ func main() {
 				Action:  clients.BaseInstall,
 			},
 			{
+				Name:    "static-server",
+				Aliases: []string{"s"},
+				Usage:   `serve files in the current/specified directory over http `,
+				Action:  clients.StaticServer,
+			},
+			{
+				Name:    "kill-static-server",
+				Aliases: []string{"k"},
+				Usage:   `Stop the static server`,
+				Action:  clients.StopStaticServer,
+			},
+			{
 				Name:        "terraform",
 				Aliases:     []string{"t"},
 				Usage:       "terraform commands",

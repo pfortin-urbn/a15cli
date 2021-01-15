@@ -3,7 +3,9 @@ package clients
 import (
 	"archive/zip"
 	"fmt"
+	"gopkg.in/yaml.v2"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -141,4 +143,25 @@ func fileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
+}
+
+func  ReadConfig(path string, receiver interface{}) error {
+	filename, _ := filepath.Abs(path)
+	yamlFile, err := ioutil.ReadFile(filename)
+	err = yaml.Unmarshal(yamlFile, receiver)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func  WriteConfig(path string, data interface{}) error {
+	filename, _ := filepath.Abs(path)
+
+	bytes, err := yaml.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(filename, bytes, 0644)
 }
