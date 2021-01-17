@@ -1,0 +1,66 @@
+-
+  # Get Site Configuration
+  url: /fp-us/configuration
+  method: GET
+  status: 200
+  content_type: application/json
+  body: '{
+          "currency": "USD",
+          "language": "en-US"
+          }'
+-
+  # Add to Cart
+  url: /fp-us/carts/items
+  method: POST
+  status: 200
+  content_type: application/json
+  body: '{
+          "id": "cart-id-01",
+          "items": [],
+          "shipBuckets": []
+          }'
+-
+  # Not found
+  url: /auth
+  method: POST
+  received_body_part: "john@aol.com"
+  status: 404
+  content_type: application/json
+  body: '{
+  "status": "Not found!!!"
+  }'
+-
+  # Bad username or password
+  url: /auth
+  method: POST
+  received_body_part: "cafortin640@hotmail.com"
+  status: 400
+  content_type: application/json
+  body: '{
+  "status": "Username or Password incorrect"
+  }'
+- # Timeout response
+    url: /auth
+    method: POST
+    received_body_part: "time@aol.com"
+    status: 599
+    content_type: application/json
+    body: '{
+    "status": "Timeout talking to third party app!!!"
+    }'
+-
+  # Default Response
+  url: /auth
+  method: POST
+  status: 200
+  content_type: application/json
+  body: '{
+             "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoie1wiY2FydElkXCI6XCJDQnY2cy91eEJ0UmM0ZFIzNE03aEN5RFBMamJMS1JGdy9YSEY0YUYrNEh2SVlkYW9rSXhRUGJiOGxoY01XU3lISlByRVg5UkRkNGxjVlBaeTBURGg3dz09NDAyY2Y3MDk3Yzc3MWJhNzQ1YTBjNzA3OTk3OGY1YTE3NzQzYTMwYjQ3MGFkNzk0MDk4MjM3ODI1YzgzMjUxYlwiLFwid2ViSWRcIjpcIlwiLFwiYnJhbmRJZFwiOlwiZnBcIixcImRhdGFDZW50ZXJJZFwiOlwiVVMtUEFcIixcImNyZWF0ZWRUaW1lXCI6MTU2MDYwMTMyMyxcInNpdGVJZFwiOlwiZnAtdXNcIixcInNjb3BlXCI6W1wiR1VFU1RcIl0sXCJlbXBsb3llZVwiOmZhbHNlLFwicHJvZmlsZUlkXCI6XCJiLzFnZVpxTXVjWDhpUUxnYmFMTjhtSXc4RkdGampRN0xrQUpoUnNCUlBRdjlPNExoVDAwbWxVeE5UbWsvbElpSlByRVg5UkRkNGxjVlBaeTBURGg3dz09NTFkYjIyZDgxYTlkYmNkOThiMDY1Zjg4MTM0NGZhYzRkZGY1MmYxODlmN2Y2MjNkZTVjOTU5MTYzNGIzNGU0NlwiLFwidHJhY2VyXCI6XCJOTVFOTDhBM0I2XCIsXCJzaXRlR3JvdXBcIjpcImZwXCJ9IiwiZXhwIjoxNTYwNjM3MzIzLCJpYXQiOjE1NjA2MDEzMjMsImlzcyI6ImZwIn0.-nIt-Eei_AaBWbRO3sJJ6Je8nia1rh7-lXPiFeOYfrs",
+             "reAuthToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoie1wiY2FydElkXCI6XCJDQnY2cy91eEJ0UmM0ZFIzNE03aEN5RFBMamJMS1JGdy9YSEY0YUYrNEh2SVlkYW9rSXhRUGJiOGxoY01XU3lISlByRVg5UkRkNGxjVlBaeTBURGg3dz09NDAyY2Y3MDk3Yzc3MWJhNzQ1YTBjNzA3OTk3OGY1YTE3NzQzYTMwYjQ3MGFkNzk0MDk4MjM3ODI1YzgzMjUxYlwiLFwid2ViSWRcIjpcIlwiLFwiYnJhbmRJZFwiOlwiXCIsXCJkYXRhQ2VudGVySWRcIjpcIlwiLFwiY3JlYXRlZFRpbWVcIjowLFwic2l0ZUlkXCI6XCJmcC11c1wiLFwic2NvcGVcIjpbXCJHVUVTVFwiXSxcImVtcGxveWVlXCI6ZmFsc2UsXCJwcm9maWxlSWRcIjpcImIvMWdlWnFNdWNYOGlRTGdiYUxOOG1JdzhGR0ZqalE3TGtBSmhSc0JSUFF2OU80TGhUMDBtbFV4TlRtay9sSWlKUHJFWDlSRGQ0bGNWUFp5MFREaDd3PT01MWRiMjJkODFhOWRiY2Q5OGIwNjVmODgxMzQ0ZmFjNGRkZjUyZjE4OWY3ZjYyM2RlNWM5NTkxNjM0YjM0ZTQ2XCIsXCJ0cmFjZXJcIjpcIk5NUU5MOEEzQjZcIixcInNpdGVHcm91cFwiOlwiXCJ9IiwiZXhwIjoyNDkzNzIxMzIzLCJpYXQiOjE1NjA2MDEzMjMsImlzcyI6ImFuIn0.x4nhr91k36M0bAVhYo_SMBp5_7-uZTJJIPNmZbb5qkU",
+             "reAuthExpiresIn": 15552000,
+             "expiresIn": 600,
+             "scope": "GUEST",
+             "tracer": "NMQNL8A3B6",
+             "dataCenterId": "DC_PA",
+             "geoRegion": ""
+         }'

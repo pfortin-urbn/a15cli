@@ -1,0 +1,41 @@
+-
+  # Bad username or password
+  url: /fp-us/users/authentication
+  method: POST
+  received_body_part: "cafortin640@hotmail.com"
+  status: 400
+  content_type: application/json
+  body: '{
+  "status": "Username or Password incorrect"
+  }'
+- # Timeout response
+    url: /fp-us/users/authentication
+    method: POST
+    received_body_part: "time@aol.com"
+    status: 599
+    content_type: application/json
+    body: '{
+      "status": "Timeout talking to third party app!!!"
+    }'
+-
+  # Default Response
+  url: /fp-us/users/authentication
+  method: POST
+  status: 200
+  content_type: application/json
+  body: '{
+       "dataCenterId": "US-PA",
+       "profileId": "123456-12324-4356-abcd",
+       "webId": "",
+       "groups": [],
+       "employee": False
+   }'
+-
+  # Default Response
+  url: /fp-us/registered-carts
+  method: POST
+  status: 200
+  content_type: application/json
+  body: '{
+      "cartId": "654321-42321-6534-dcba"
+  }'

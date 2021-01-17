@@ -1,4 +1,4 @@
-package clients
+package handlers
 
 import (
 	"fmt"
@@ -6,28 +6,25 @@ import (
 	"os"
 )
 
-func ListGcpCredentials(c *cli.Context) error {
+func ListAwsCredentials(c *cli.Context) error {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
 
-	gcpDir := fmt.Sprintf("%s/.gcp/", home)
+	awsDir := fmt.Sprintf("%s/.aws/", home)
 
-	versions, err := WalkMatch(gcpDir, "")
+	versions, err := WalkMatch(awsDir, "credentials.*")
 	if err != nil {
 		return err
 	}
-	currentVersion, err := getCurrentVersion("credentials", "", gcpDir)
+	currentVersion, err := getCurrentVersion("credentials", ".", awsDir)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Locally Available gcp credentials:")
+	fmt.Println("Locally Available aws credentials:")
 	for _, version := range versions {
-		if version == "credentials"{
-			continue
-		}
 		fmt.Printf("\t- %s", version)
 		if version == currentVersion {
 			fmt.Printf(" (Active)")
@@ -37,23 +34,23 @@ func ListGcpCredentials(c *cli.Context) error {
 	return nil
 }
 
-func SwitchGcpCredentials(c *cli.Context) error {
+func SwitchAwsCredentials(c *cli.Context) error {
 	if c.Args().Len() != 1 {
-		return fmt.Errorf("GCP credentials credentialsName not supplied")
+		return fmt.Errorf("AWS credentials credentialsName not supplied")
 	}
 	credentialsName := c.Args().First()
-	fmt.Printf("switching to GCP credentials: %s\n", credentialsName)
+	fmt.Printf("switching to AWS credentials: %s\n", credentialsName)
 
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
 
-	symlinkSource := fmt.Sprintf("%s/.gcp/%s", home, credentialsName)
+	symlinkSource := fmt.Sprintf("%s/.aws/credentials.%s", home, credentialsName)
 	if !fileExists(symlinkSource) {
 		return fmt.Errorf("%s does not exist", symlinkSource)
 	}
-	symlinkTarget := fmt.Sprintf("%s/.gcp/credentials", home)
+	symlinkTarget := fmt.Sprintf("%s/.aws/credentials", home)
 
 	if _, err := os.Lstat(symlinkTarget); err == nil {
 		if err := os.Remove(symlinkTarget); err != nil {

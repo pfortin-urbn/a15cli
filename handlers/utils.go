@@ -1,9 +1,8 @@
-package clients
+package handlers
 
 import (
 	"archive/zip"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -11,11 +10,13 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
-const(
+const (
 	ANSI_RESET = "\u001B[0m"
-	ANSI_RED = "\u001B[31m"
+	ANSI_RED   = "\u001B[31m"
 )
 
 var validateVersion = regexp.MustCompile(`^\d[0-9.]*$`)
@@ -63,7 +64,7 @@ func unzip(src, destDir string) error {
 			os.MkdirAll(fpath, f.Mode())
 		} else {
 			var fdir string
-			if lastIndex := strings.LastIndex(fpath,string(os.PathSeparator)); lastIndex > -1 {
+			if lastIndex := strings.LastIndex(fpath, string(os.PathSeparator)); lastIndex > -1 {
 				fdir = fpath[:lastIndex]
 			}
 
@@ -126,7 +127,7 @@ func after(value string, a string) string {
 	return value[adjustedPos:len(value)]
 }
 
-func getCurrentVersion(linkName, separator, binDir string) (string, error){
+func getCurrentVersion(linkName, separator, binDir string) (string, error) {
 	filename, err := os.Readlink(fmt.Sprintf("%s/%s", binDir, linkName))
 	if err != nil {
 		return "", err
@@ -145,7 +146,7 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func  ReadConfig(path string, receiver interface{}) error {
+func ReadConfig(path string, receiver interface{}) error {
 	filename, _ := filepath.Abs(path)
 	yamlFile, err := ioutil.ReadFile(filename)
 	err = yaml.Unmarshal(yamlFile, receiver)
@@ -155,7 +156,7 @@ func  ReadConfig(path string, receiver interface{}) error {
 	return nil
 }
 
-func  WriteConfig(path string, data interface{}) error {
+func WriteConfig(path string, data interface{}) error {
 	filename, _ := filepath.Abs(path)
 
 	bytes, err := yaml.Marshal(data)
@@ -164,4 +165,39 @@ func  WriteConfig(path string, data interface{}) error {
 	}
 
 	return ioutil.WriteFile(filename, bytes, 0644)
+}
+
+func MakeHttpRequest(method, serviceUrl, site string, headers map[string]string, reqBody *string) (int, string, error) {
+	var req *http.Request
+	var err error
+
+	var requestBody *strings.Reader = nil
+	if reqBody != nil {
+		requestBody = strings.NewReader(*reqBody)
+	}
+
+	if site != "" {
+		req, err = http.NewRequest(method, fmt.Sprintf(serviceUrl, site), requestBody)
+	} else {
+		req, err = http.NewRequest(method, serviceUrl, requestBody)
+	}
+	if err != nil {
+		return 500, "", err
+	}
+
+	for key, val := range headers {
+		req.Header.Set(key, val)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return 500, "", err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return 500, "", err
+	}
+	resp.Body.Close()
+
+	return resp.StatusCode, string(body), nil
 }

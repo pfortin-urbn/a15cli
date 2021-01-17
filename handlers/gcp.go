@@ -1,32 +1,31 @@
-package clients
+package handlers
 
 import (
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
-	"strings"
 )
 
-func ListSshCredentials(c *cli.Context) error {
+func ListGcpCredentials(c *cli.Context) error {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
 
-	sshDir := fmt.Sprintf("%s/.ssh/", home)
+	gcpDir := fmt.Sprintf("%s/.gcp/", home)
 
-	versions, err := WalkMatch(sshDir, "")
+	versions, err := WalkMatch(gcpDir, "")
 	if err != nil {
 		return err
 	}
-	currentVersion, err := getCurrentVersion("id_rsa", "", sshDir)
+	currentVersion, err := getCurrentVersion("credentials", "", gcpDir)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Locally Available ssh credentials:")
+	fmt.Println("Locally Available gcp credentials:")
 	for _, version := range versions {
-		if !strings.HasSuffix(version, "_rsa") || version == "id_rsa"{
+		if version == "credentials"{
 			continue
 		}
 		fmt.Printf("\t- %s", version)
@@ -38,19 +37,19 @@ func ListSshCredentials(c *cli.Context) error {
 	return nil
 }
 
-func SwitchSshCredentials(c *cli.Context) error {
+func SwitchGcpCredentials(c *cli.Context) error {
 	if c.Args().Len() != 1 {
-		return fmt.Errorf("SSH credentials credentialsName not supplied")
+		return fmt.Errorf("GCP credentials credentialsName not supplied")
 	}
 	credentialsName := c.Args().First()
-	fmt.Printf("switching to SSH credentials: %s\n", credentialsName)
+	fmt.Printf("switching to GCP credentials: %s\n", credentialsName)
 
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
 
-	symlinkSource := fmt.Sprintf("%s/.ssh/%s", home, credentialsName)
+	symlinkSource := fmt.Sprintf("%s/.gcp/%s", home, credentialsName)
 	if !fileExists(symlinkSource) {
 		return fmt.Errorf("%s does not exist", symlinkSource)
 	}

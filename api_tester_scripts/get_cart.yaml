@@ -1,0 +1,89 @@
+vars:
+  Env: local
+  Site: fp-us
+  Channel: web
+  Currency: USD
+  Language: en-US
+actions:
+  -
+    #Get a token
+    env: "{{.Env}}"
+    service: token
+    site: "{{.Site}}"
+    headers:
+      channel: "{{.Channel}}"
+      currency: "{{.Currency}}"
+      language: "{{.Language}}"
+    method: POST
+    url_pattern: "v0/%s/auth"
+    resp_values:
+      json:
+        Token: authToken
+        ReAuthToken: reauthToken
+  -
+    # Search for products
+    env: "{{.Env}}"
+    service: catalog
+    site: "{{.Site}}"
+    headers:
+      Authorization: "Bearer {{.Token}}"
+      channel: "{{.Channel}}"
+      currency: "{{.Currency}}"
+      language: "{{.Language}}"
+    method: GET
+    url_pattern: "%s/configuration"
+    resp_values:
+      json:
+        token: authToken
+        retoken: reauthToken
+  -
+    # Add product to cart
+    env: "{{.Env}}"
+    service: checkout
+    site: "{{.Site}}"
+    headers:
+      Authorization: "Bearer {{.Token}}"
+      channel: "{{.Channel}}"
+      currency: "{{.Currency}}"
+      language: "{{.Language}}"
+    method: POST
+    url_pattern: "%s/carts/items"
+    body: '{"this": "is", "a": "test"}'
+    resp_values:
+      json:
+        token: authToken
+        retoken: reauthToken
+  -
+    # GET cart
+    env: "{{.Env}}"
+    service: checkout
+    site: "{{.Site}}"
+    headers:
+      Authorization: "Bearer {{.Token}}"
+      channel: "{{.Channel}}"
+      currency: "{{.Currency}}"
+      language: "{{.Language}}"
+    method: POST
+    url_pattern: "%s/carts/items"
+    body: '{"this": "is", "a": "test"}'
+    resp_values:
+      json:
+        token: authToken
+        retoken: reauthToken
+  -
+    # POST cart
+    env: "{{.Env}}"
+    service: checkout
+    site: "{{.Site}}"
+    headers:
+      Authorization: "Bearer {{.Token}}"
+      channel: "{{.Channel}}"
+      currency: "{{.Currency}}"
+      language: "{{.Language}}"
+    method: POST
+    url_pattern: "%s/carts/items"
+    body: '{"this": "is", "a": "test"}'
+    resp_values:
+      json:
+        token: authToken
+        retoken: reauthToken

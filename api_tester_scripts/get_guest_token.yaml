@@ -1,0 +1,22 @@
+vars:
+  Env: local
+  Site: fp-us
+  Channel: web
+  Currency: USD
+  Language: en-US
+actions:
+  -
+    #Get a token
+    env: "{{.Env}}"
+    service: token
+    site: "{{.Site}}"
+    headers:
+      channel: "{{.Channel}}"
+      currency: "{{.Currency}}"
+      language: "{{.Language}}"
+    method: POST
+    url_pattern: "v0/%s/auth"
+    resp_values:
+      json:
+        Token: authToken
+        ReAuthToken: reauthToken

@@ -1,30 +1,34 @@
-package clients
+package handlers
 
 import (
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
+	"strings"
 )
 
-func ListAwsCredentials(c *cli.Context) error {
+func ListSshCredentials(c *cli.Context) error {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
 
-	awsDir := fmt.Sprintf("%s/.aws/", home)
+	sshDir := fmt.Sprintf("%s/.ssh/", home)
 
-	versions, err := WalkMatch(awsDir, "credentials.*")
+	versions, err := WalkMatch(sshDir, "")
 	if err != nil {
 		return err
 	}
-	currentVersion, err := getCurrentVersion("credentials", ".", awsDir)
+	currentVersion, err := getCurrentVersion("id_rsa", "", sshDir)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Locally Available aws credentials:")
+	fmt.Println("Locally Available ssh credentials:")
 	for _, version := range versions {
+		if !strings.HasSuffix(version, "_rsa") || version == "id_rsa"{
+			continue
+		}
 		fmt.Printf("\t- %s", version)
 		if version == currentVersion {
 			fmt.Printf(" (Active)")
@@ -34,23 +38,23 @@ func ListAwsCredentials(c *cli.Context) error {
 	return nil
 }
 
-func SwitchAwsCredentials(c *cli.Context) error {
+func SwitchSshCredentials(c *cli.Context) error {
 	if c.Args().Len() != 1 {
-		return fmt.Errorf("AWS credentials credentialsName not supplied")
+		return fmt.Errorf("SSH credentials credentialsName not supplied")
 	}
 	credentialsName := c.Args().First()
-	fmt.Printf("switching to AWS credentials: %s\n", credentialsName)
+	fmt.Printf("switching to SSH credentials: %s\n", credentialsName)
 
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
 
-	symlinkSource := fmt.Sprintf("%s/.aws/credentials.%s", home, credentialsName)
+	symlinkSource := fmt.Sprintf("%s/.ssh/%s", home, credentialsName)
 	if !fileExists(symlinkSource) {
 		return fmt.Errorf("%s does not exist", symlinkSource)
 	}
-	symlinkTarget := fmt.Sprintf("%s/.aws/credentials", home)
+	symlinkTarget := fmt.Sprintf("%s/.gcp/credentials", home)
 
 	if _, err := os.Lstat(symlinkTarget); err == nil {
 		if err := os.Remove(symlinkTarget); err != nil {

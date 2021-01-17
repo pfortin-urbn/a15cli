@@ -10,6 +10,8 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
+    ldflags:
+      - -X main.GitCommit={{.Env.GIT_COMMIT}}
     goos:
       - linux
       - windows
