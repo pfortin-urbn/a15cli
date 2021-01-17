@@ -27,25 +27,6 @@ func main() {
 				Action:  handlers.BaseInstall,
 			},
 			{
-				Name:    "static-server",
-				Aliases: []string{"s"},
-				Usage:   `static files server commands`,
-				Subcommands: []*cli.Command{
-					{
-						Name:    "serve",
-						Aliases: []string{"s"},
-						Usage:   "serve files in the current/specified directory over http",
-						Action:  handlers.StaticServer,
-					},
-					{
-						Name:    "kill",
-						Aliases: []string{"k"},
-						Usage:   "kill the static server",
-						Action:  handlers.StopStaticServer,
-					},
-				},
-			},
-			{
 				Name:    "terraform",
 				Aliases: []string{"t"},
 				Usage:   "terraform commands",
@@ -64,7 +45,7 @@ func main() {
 					},
 					{
 						Name:    "switch",
-						Aliases: []string{"s"},
+						Aliases: []string{"w"},
 						Usage:   "switch terraform versions",
 						Action:  handlers.SwitchTerraformVersion,
 					},
@@ -83,7 +64,7 @@ func main() {
 					},
 					{
 						Name:    "switch",
-						Aliases: []string{"s"},
+						Aliases: []string{"w"},
 						Usage:   "switch aws credentials",
 						Action:  handlers.SwitchAwsCredentials,
 					},
@@ -102,7 +83,7 @@ func main() {
 					},
 					{
 						Name:    "switch",
-						Aliases: []string{"s"},
+						Aliases: []string{"w"},
 						Usage:   "switch gcp credentials",
 						Action:  handlers.SwitchGcpCredentials,
 					},
@@ -121,7 +102,7 @@ func main() {
 					},
 					{
 						Name:    "switch",
-						Aliases: []string{"s"},
+						Aliases: []string{"w"},
 						Usage:   "switch ssh identity",
 						Action:  handlers.SwitchSshCredentials,
 					},
@@ -134,23 +115,39 @@ func main() {
 				Action:  handlers.ApiTester,
 			},
 			{
-				Name:    "mock_server",
-				Aliases: []string{"m"},
+				Name:    "static-server",
+				Aliases: []string{"ss"},
+				Usage:   `static files server commands`,
+				Subcommands: []*cli.Command{
+					{
+						Name:    "start",
+						Aliases: []string{"s"},
+						Usage:   "serve files in the current/specified directory over http",
+						Action:  handlers.StaticServer,
+					},
+					{
+						Name:    "stop",
+						Aliases: []string{"t"},
+						Usage:   "kill the static server",
+						Action:  handlers.StopStaticServer,
+					},
+				},
+			},
+			{
+				Name:    "mock-server",
+				Aliases: []string{"ms"},
 				Usage:   "Webserver that matches Requests and return specific responses",
 				Subcommands: []*cli.Command{
 					{
 						Name:    "start",
 						Aliases: []string{"s"},
-						Usage:   "list available ssh identities",
-						Action:  handlers.MockServer,
-						Flags: []cli.Flag{
-							&cli.BoolFlag{Name: "detach", Aliases: []string{"d"}},
-						},
+						Usage:   "start swiss mock server",
+						Action:  handlers.StartMockServer,
 					},
 					{
-						Name:    "k",
-						Aliases: []string{"k"},
-						Usage:   "switch ssh identity",
+						Name:    "t",
+						Aliases: []string{"t"},
+						Usage:   "stop swiss mock server",
 						Action:  handlers.StopMockServer,
 					},
 				},

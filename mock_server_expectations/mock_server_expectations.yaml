@@ -1,6 +1,6 @@
 -
   # Get Site Configuration
-  url: /fp-us/configuration
+  url: /v0/fp-us/configuration
   method: GET
   status: 200
   content_type: application/json
@@ -10,7 +10,7 @@
           }'
 -
   # Add to Cart
-  url: /fp-us/carts/items
+  url: /v0/fp-us/carts/items
   method: POST
   status: 200
   content_type: application/json
@@ -21,7 +21,7 @@
           }'
 -
   # Not found
-  url: /auth
+  url: /v0/auth
   method: POST
   received_body_part: "john@aol.com"
   status: 404
@@ -31,7 +31,7 @@
   }'
 -
   # Bad username or password
-  url: /auth
+  url: /v0/auth
   method: POST
   received_body_part: "cafortin640@hotmail.com"
   status: 400
@@ -40,7 +40,7 @@
   "status": "Username or Password incorrect"
   }'
 - # Timeout response
-    url: /auth
+    url: /v0/auth
     method: POST
     received_body_part: "time@aol.com"
     status: 599
@@ -50,7 +50,7 @@
     }'
 -
   # Default Response
-  url: /auth
+  url: /v0/auth
   method: POST
   status: 200
   content_type: application/json

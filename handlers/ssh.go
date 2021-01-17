@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"os"
 	"strings"
+
+	"github.com/urfave/cli/v2"
 )
 
 func ListSshCredentials(c *cli.Context) error {
@@ -26,7 +27,7 @@ func ListSshCredentials(c *cli.Context) error {
 
 	fmt.Println("Locally Available ssh credentials:")
 	for _, version := range versions {
-		if !strings.HasSuffix(version, "_rsa") || version == "id_rsa"{
+		if !strings.HasSuffix(version, "_rsa") || version == "id_rsa" {
 			continue
 		}
 		fmt.Printf("\t- %s", version)
@@ -50,18 +51,30 @@ func SwitchSshCredentials(c *cli.Context) error {
 		return err
 	}
 
-	symlinkSource := fmt.Sprintf("%s/.ssh/%s", home, credentialsName)
-	if !fileExists(symlinkSource) {
+	symlinkSource := fmt.Sprintf("%s/.ssh/%s_id_rsa", home, credentialsName)
+	symlinkSourcePub := fmt.Sprintf("%s/.ssh/%s_id_rsa.pub", home, credentialsName)
+	if !fileExists(symlinkSource) || !fileExists(symlinkSourcePub) {
 		return fmt.Errorf("%s does not exist", symlinkSource)
 	}
-	symlinkTarget := fmt.Sprintf("%s/.gcp/credentials", home)
+	symlinkTarget := fmt.Sprintf("%s/.ssh/id_rsa", home)
+	symlinkTargetPub := fmt.Sprintf("%s/.ssh/id_rsa.pub", home)
 
 	if _, err := os.Lstat(symlinkTarget); err == nil {
 		if err := os.Remove(symlinkTarget); err != nil {
 			return fmt.Errorf("failed to unlink: %+v", err)
 		}
 	}
+	if _, err := os.Lstat(symlinkTargetPub); err == nil {
+		if err := os.Remove(symlinkTargetPub); err != nil {
+			return fmt.Errorf("failed to unlink: %+v", err)
+		}
+	}
 	err = os.Symlink(symlinkSource, symlinkTarget)
+	if err != nil {
+		return fmt.Errorf("failed to link: %+v", err)
+	}
+
+	err = os.Symlink(symlinkSourcePub, symlinkTargetPub)
 	if err != nil {
 		return fmt.Errorf("failed to link: %+v", err)
 	}

@@ -21,6 +21,7 @@
         * list all the credentials
         * switch credentials
 1. Running a static server
+1. Running a mock-server
 1. testing apis from scripts (like tavern)
 1. More to come...
 

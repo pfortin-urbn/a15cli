@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"a15cli/models"
 	"fmt"
+	"os"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/urfave/cli/v2"
-	"os"
 )
 
 type StaticServerConf struct {
@@ -13,14 +15,8 @@ type StaticServerConf struct {
 }
 
 func StaticServer(c *cli.Context) error {
-	dir := c.Args().Get(0)
-	addr := c.Args().Get(1)
-	if dir == "" {
-		dir = "."
-	}
-	if addr == "" {
-		addr = ":8080"
-	}
+	dir := models.Config.ServerDirectory
+	addr := models.Config.ListenPort
 
 	e := echo.New()
 	e.HideBanner = true
@@ -41,7 +37,7 @@ func StaticServer(c *cli.Context) error {
 		return err
 	}
 
-	e.Start(addr)
+	fmt.Println(e.Start(addr))
 	return nil
 }
 
